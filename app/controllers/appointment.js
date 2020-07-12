@@ -1,51 +1,49 @@
-const Item = require('../models/appointment');
+const Appointment = require('../models/appointment');
 
-exports.create = function (req, res, next) {
+exports.create = function (req, res) {
 
-    var newItem = {
+    const newAppointment = {
         name: req.body.name,
-        price: req.body.price,
-        fileName: req.body.fileName,
-        type: req.body.type
+        carModel: req.body.carModel,
+        date: req.body.date,
+        time: req.body.time
     };
-    const myItem = new Item(newItem);
-    myItem.save(function (err, item) {
+    const saveAppointment = new Appointment(newAppointment);
+    saveAppointment.save(function (err, appointment) {
         if (err) {
             res.json({success: false, result: [], messages: [err.message]});
         } else {
-            req.item = item;
-            req.type = req.body.type;
-            next();
+            res.json({success: true, result: appointment, messages: []});
         }
     });
 };
 
 exports.update = function (req, res) {
-    var updatedItem = {
+    const updatedAppointment = {
         name: req.body.name,
-        price: req.body.price,
-        fileName: req.body.fileName,
-        type: req.body.type
+        carModel: req.body.carModel,
+        date: req.body.date,
+        time: req.body.time
     };
 
-    Item.update({"_id": req.body._id}, {$set: updatedItem},
-        function (err, item) {
+    Appointment.update({"_id": req.body._id}, {$set: updatedAppointment},
+        function (err, appointment) {
             if (err) {
                 res.json({success: false, result: [], messages: [err.message]});
             } else {
-                res.json({success: true, result: item, messages: []});
+                res.json({success: true, result: appointment, messages: []});
             }
         }
     )
 };
 
 exports.delete = function (req, res) {
-    Item.remove({"_id": req.params.id},
-        function (err, item) {
+    Appointment.remove({"_id": req.params.id},
+        function (err, appointment) {
             if (err) {
                 res.json({success: false, result: [], messages: [err.message]});
             } else {
-                res.json({success: true, result: item, messages: []});
+                res.json({success: true, result: appointment, messages: []});
             }
         }
     )
@@ -53,14 +51,12 @@ exports.delete = function (req, res) {
 
 exports.read = function (req, res) {
 
-    const bearerHeader = req.headers['Authorization'];
-    const bearerHeader2 = req.headers['Content-Type'];
-    Item.find({},
-        function (err, items) {
+    Appointment.find({},
+        function (err, appointment) {
             if (err) {
                 res.json({success: false, result: [], messages: [err.message]});
             } else {
-                res.json({success: true, result: items, messages: []});
+                res.json({success: true, result: appointment, messages: []});
             }
         }
     )
